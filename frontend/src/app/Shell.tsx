@@ -14,7 +14,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     { name: "Receipts", href: "/receipts", disabled: false },
     { name: "Deliveries", href: "/deliveries", disabled: false },
     { name: "Transfers", href: "/transfers", disabled: false },
-    { name: "Ledger", href: "#", disabled: true },
+    { name: "Ledger", href: "/ledger", disabled: false },
   ];
 
   return (
