@@ -178,6 +178,10 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
         print(f"Failed to reset password: {e}")
         raise HTTPException(status_code=500, detail="Internal server error.")
 
+@app.get("/auth/me", response_model=UserResponse)
+def get_me(current_user: models.User = Depends(get_current_user)):
+    return current_user
+
 @app.get("/health", response_model=HealthResponse)
 def health_check():
     return HealthResponse(status="ok", message="StockSense backend foundation is running")

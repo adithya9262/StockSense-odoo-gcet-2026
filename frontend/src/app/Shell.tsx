@@ -5,15 +5,35 @@ import { usePathname, useRouter } from "next/navigation";
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   useEffect(() => {
-    if (!isAuthPage && !localStorage.getItem("token")) {
+    if (isAuthPage) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
       router.push("/login");
+      return;
     }
+
+    fetch("http://localhost:8000/auth/me", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then(data => {
+        setUserEmail(data.email);
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        router.push("/login");
+      });
   }, [pathname, isAuthPage, router]);
 
   const handleLogout = () => {
@@ -81,12 +101,19 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         {/* Top bar (mobile) */}
         <header className="md:hidden shrink-0 h-16 bg-white border-b border-gray-200 flex items-center px-4 justify-between">
           <div className="font-bold text-lg text-blue-600">StockSense</div>
-          <button className="p-2 text-gray-600 hover:text-gray-900" onClick={() => setIsOpen(true)}>☰</button>
+          <div className="flex items-center space-x-2">
+            <div className="text-xs font-medium text-gray-500 max-w-[120px] truncate" title={userEmail || "Loading..."}>
+              {userEmail || "Loading..."}
+            </div>
+            <button className="p-2 text-gray-600 hover:text-gray-900" onClick={() => setIsOpen(true)}>☰</button>
+          </div>
         </header>
         
         {/* Top bar (desktop) */}
         <header className="hidden md:flex shrink-0 h-16 bg-white border-b border-gray-200 items-center px-8 justify-end space-x-4">
-          <div className="text-sm font-medium text-gray-500">Admin User</div>
+          <div className="text-sm font-medium text-gray-500 max-w-[300px] truncate" title={userEmail || "Loading..."}>
+            {userEmail || "Loading..."}
+          </div>
           <button onClick={handleLogout} className="text-sm text-red-600 font-medium hover:text-red-700">Logout</button>
         </header>
 
