@@ -37,7 +37,7 @@ class ProductResponse(BaseModel):
 
 class LocationCreate(BaseModel):
     name: StrTrimmed
-    type: Literal["internal", "vendor", "customer"]
+    type: Literal["internal", "vendor", "customer", "inventory_loss"]
 
 class LocationResponse(BaseModel):
     id: int
@@ -48,7 +48,7 @@ class LocationResponse(BaseModel):
 
 class StockMoveCreate(BaseModel):
     reference: StrTrimmed
-    type: Literal["receipt", "delivery", "transfer"]
+    type: Literal["receipt", "delivery", "transfer", "adjustment"]
     product_id: int
     source_location_id: int
     dest_location_id: int
@@ -81,3 +81,8 @@ class ResetPasswordRequest(BaseModel):
     email: StrTrimmed
     otp: str = Field(..., min_length=6, max_length=6)
     new_password: str = Field(..., min_length=8)
+
+class AdjustmentCreate(BaseModel):
+    product_id: int
+    location_id: int
+    counted_qty: int = Field(..., ge=0)
