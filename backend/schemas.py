@@ -3,6 +3,23 @@ from typing import Annotated, Literal
 
 StrTrimmed = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
+class UserCreate(BaseModel):
+    email: StrTrimmed
+    password: str = Field(..., min_length=8)
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    email: str
+    model_config = ConfigDict(from_attributes=True)
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+
 class HealthResponse(BaseModel):
     status: str
     message: str
@@ -56,3 +73,11 @@ class DashboardResponse(BaseModel):
     pending_receipts: int
     pending_deliveries: int
     pending_transfers: int
+
+class ForgotPasswordRequest(BaseModel):
+    email: StrTrimmed
+
+class ResetPasswordRequest(BaseModel):
+    email: StrTrimmed
+    otp: str = Field(..., min_length=6, max_length=6)
+    new_password: str = Field(..., min_length=8)
