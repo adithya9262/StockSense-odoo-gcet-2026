@@ -2,3 +2,5 @@ __pycache__/
 *.py[cod]
 .venv/
 .env
+frontend/AGENTS.md
+frontend/CLAUDE.md
