@@ -71,7 +71,8 @@ export default function LedgerPage() {
   const typeLabels: Record<string, string> = {
     receipt: "Receipt",
     transfer: "Transfer",
-    delivery: "Delivery"
+    delivery: "Delivery",
+    adjustment: "Adjustment"
   };
 
   const filteredLedger = ledger.filter(move => {
@@ -134,6 +135,7 @@ export default function LedgerPage() {
               <option value="receipt">Receipts</option>
               <option value="transfer">Transfers</option>
               <option value="delivery">Deliveries</option>
+              <option value="adjustment">Adjustments</option>
             </select>
           </div>
           <div className="w-full sm:w-64">
