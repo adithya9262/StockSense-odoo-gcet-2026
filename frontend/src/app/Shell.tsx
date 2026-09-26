@@ -1,11 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const isAuthPage = pathname === "/login" || pathname === "/signup";
+
+  useEffect(() => {
+    if (!isAuthPage && !localStorage.getItem("token")) {
+      router.push("/login");
+    }
+  }, [pathname, isAuthPage, router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
+
+  if (isAuthPage) {
+    return <main>{children}</main>;
+  }
 
   // Link items. Disabled items are not clickable.
   const navItems = [
@@ -66,8 +84,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </header>
         
         {/* Top bar (desktop) */}
-        <header className="hidden md:flex shrink-0 h-16 bg-white border-b border-gray-200 items-center px-8 justify-end">
+        <header className="hidden md:flex shrink-0 h-16 bg-white border-b border-gray-200 items-center px-8 justify-end space-x-4">
           <div className="text-sm font-medium text-gray-500">Admin User</div>
+          <button onClick={handleLogout} className="text-sm text-red-600 font-medium hover:text-red-700">Logout</button>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8">

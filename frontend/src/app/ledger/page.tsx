@@ -39,10 +39,11 @@ export default function LedgerPage() {
     setLoadingData(true);
     setPageError("");
     try {
+      const headers = { "Authorization": `Bearer ${localStorage.getItem("token")}` };
       const [prodRes, locRes, ledgerRes] = await Promise.all([
-        fetch("http://localhost:8000/products"),
-        fetch("http://localhost:8000/locations"),
-        fetch("http://localhost:8000/ledger")
+        fetch("http://localhost:8000/products", { headers }),
+        fetch("http://localhost:8000/locations", { headers }),
+        fetch("http://localhost:8000/ledger", { headers })
       ]);
 
       if (!prodRes.ok || !locRes.ok || !ledgerRes.ok) {

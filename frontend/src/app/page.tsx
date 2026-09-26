@@ -30,7 +30,9 @@ export default function Dashboard() {
     setLoading(true);
     setError(false);
     try {
-      const res = await fetch("http://localhost:8000/dashboard");
+      const res = await fetch("http://localhost:8000/dashboard", {
+        headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+      });
       if (!res.ok) throw new Error("API Error");
       const json = await res.json();
       setData(json);

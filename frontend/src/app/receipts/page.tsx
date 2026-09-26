@@ -48,10 +48,11 @@ export default function ReceiptsPage() {
     setLoadingData(true);
     setPageError("");
     try {
+      const headers = { "Authorization": `Bearer ${localStorage.getItem("token")}` };
       const [prodRes, locRes, ledgerRes] = await Promise.all([
-        fetch("http://localhost:8000/products"),
-        fetch("http://localhost:8000/locations"),
-        fetch("http://localhost:8000/ledger")
+        fetch("http://localhost:8000/products", { headers }),
+        fetch("http://localhost:8000/locations", { headers }),
+        fetch("http://localhost:8000/ledger", { headers })
       ]);
 
       if (!prodRes.ok || !locRes.ok || !ledgerRes.ok) {
@@ -102,7 +103,10 @@ export default function ReceiptsPage() {
 
       const res = await fetch("http://localhost:8000/moves", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
         body: JSON.stringify(payload)
       });
 
@@ -139,7 +143,8 @@ export default function ReceiptsPage() {
     
     try {
       const res = await fetch(`http://localhost:8000/moves/${encodeURIComponent(currentReceipt.reference)}/validate`, {
-        method: "POST"
+        method: "POST",
+        headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
       });
 
       if (!res.ok) {

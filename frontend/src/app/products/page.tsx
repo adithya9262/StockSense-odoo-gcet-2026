@@ -22,7 +22,9 @@ export default function ProductsPage() {
     setLoading(true);
     setPageError("");
     try {
-      const res = await fetch("http://localhost:8000/products");
+      const res = await fetch("http://localhost:8000/products", {
+        headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+      });
       if (!res.ok) throw new Error("API Error");
       const json = await res.json();
       setProducts(json);
@@ -58,7 +60,10 @@ export default function ProductsPage() {
     try {
       const res = await fetch("http://localhost:8000/products", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
         body: JSON.stringify({ name: trimmedName, sku: trimmedSku }),
       });
       
