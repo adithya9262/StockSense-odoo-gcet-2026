@@ -1,17 +1,19 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   // Link items. Disabled items are not clickable.
   const navItems = [
     { name: "Dashboard", href: "/", disabled: false },
-    { name: "Products", href: "#", disabled: true },
-    { name: "Receipts", href: "#", disabled: true },
-    { name: "Deliveries", href: "#", disabled: true },
-    { name: "Transfers", href: "#", disabled: true },
+    { name: "Products", href: "/products", disabled: false },
+    { name: "Receipts", href: "/receipts", disabled: false },
+    { name: "Deliveries", href: "/deliveries", disabled: false },
+    { name: "Transfers", href: "/transfers", disabled: false },
     { name: "Ledger", href: "#", disabled: true },
   ];
 
@@ -38,7 +40,16 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                 {item.name}
               </span>
             ) : (
-              <Link key={item.name} href={item.href} onClick={() => setIsOpen(false)} className="block px-4 py-2 rounded-md bg-blue-50 text-blue-700 font-medium">
+              <Link 
+                key={item.name} 
+                href={item.href} 
+                onClick={() => setIsOpen(false)} 
+                className={`block px-4 py-2 rounded-md font-medium transition ${
+                  pathname === item.href 
+                    ? "bg-blue-50 text-blue-700" 
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                }`}
+              >
                 {item.name}
               </Link>
             )
